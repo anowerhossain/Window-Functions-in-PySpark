@@ -107,7 +107,9 @@ sales_df = sales_df.withColumn("last_value", last("sales_amount").over(window_sp
 ```
 
 ### 8. **Show Data**
-
+```python
+sales_df.show()
+```
 
 ### Example Output
 
