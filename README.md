@@ -22,24 +22,46 @@ The script uses a small, hardcoded dataset representing sales data:
 
 ### 1. **Row Number**
 Assigns a unique sequential number to each row in a partition, ordered by `sales_amount`.
+```python
+sales_df = sales_df.withColumn("row_number", row_number().over(window_spec))
+```
+
 
 ### 2. **Rank**
 Assigns a rank to each row in a partition, with gaps in ranking for duplicate values.
+```python
+sales_df = sales_df.withColumn("rank", rank().over(window_spec))
+```
 
 ### 3. **Dense Rank**
 Assigns a rank to each row in a partition, without gaps in ranking for duplicate values.
+```python
+sales_df = sales_df.withColumn("dense_rank", dense_rank().over(window_spec))
+```
 
 ### 4. **Lead**
 Accesses the value of the next row within the same partition, relative to the current row.
+```python
+sales_df = sales_df.withColumn("lead_value", lead("sales_amount", 1).over(window_spec))
+```
 
 ### 5. **Lag**
 Accesses the value of the previous row within the same partition, relative to the current row.
+```python
+sales_df = sales_df.withColumn("lag_value", lag("sales_amount", 1).over(window_spec))
+```
 
 ### 6. **First Value**
 Returns the first value in the window partition.
+```python
+sales_df = sales_df.withColumn("first_value", first("sales_amount").over(window_spec))
+```
 
 ### 7. **Last Value**
 Returns the last value in the window partition. The script ensures it retrieves the true last value of the partition by explicitly defining the window frame.
+```python
+sales_df = sales_df.withColumn("last_value", last("sales_amount").over(window_spec_full))
+```
 
 ### Example Output
 
