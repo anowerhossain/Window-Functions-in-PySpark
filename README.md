@@ -7,6 +7,36 @@ This repository demonstrates how to use various window functions in PySpark with
 pip install pyspark
 ```
 
+### Initialize Spark session
+```python
+spark = SparkSession.builder \
+    .appName("WindowFunctions") \
+    .getOrCreate()
+```
+
+### Sample data
+
+```python
+data = [
+    (1, "North", 500),
+    (2, "North", 500),
+    (3, "North", 400),
+    (4, "South", 700),
+    (5, "South", 700),
+    (6, "South", 600)
+]
+```
+
+### Define schema
+```python
+columns = ["salesperson_id", "region", "sales_amount"]
+```
+
+### Create DataFrame
+```python
+sales_df = spark.createDataFrame(data, schema=columns)
+```
+
 ### Dataset
 The script uses a small, hardcoded dataset representing sales data:
 
@@ -19,6 +49,19 @@ The script uses a small, hardcoded dataset representing sales data:
 | 5              | South  | 700          |
 | 6              | South  | 600          |
 
+
+
+### Define the window specification
+
+```python
+window_spec = Window.partitionBy("region").orderBy("sales_amount")
+```
+
+### Define the window spec with an explicit range
+
+```python
+window_spec_full = Window.partitionBy("region").orderBy("sales_amount").rowsBetween(Window.unboundedPreceding, Window.unboundedFollowing)
+```
 
 ### 1. **Row Number**
 Assigns a unique sequential number to each row in a partition, ordered by `sales_amount`.
@@ -62,6 +105,9 @@ Returns the last value in the window partition. The script ensures it retrieves 
 ```python
 sales_df = sales_df.withColumn("last_value", last("sales_amount").over(window_spec_full))
 ```
+
+### 8. **Show Data**
+
 
 ### Example Output
 
